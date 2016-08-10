@@ -2147,6 +2147,8 @@ PHP_FUNCTION(gearman_client_do_epoch) {
 		RETURN_EMPTY_STRING();
 	}	
 	
+	obj = Z_GEARMAN_CLIENT_P(zobj);
+	
 	time_t when = (long)timestamp;	
 	job_handle = zend_string_alloc(GEARMAN_JOB_HANDLE_SIZE-1, 0);
 	obj->ret= gearman_client_do_epoch(&(obj->client), 
@@ -2273,16 +2275,18 @@ PHP_FUNCTION(gearman_client_job_exists_by_unique_key) {
 								&unique_key, &unique_key_len) == FAILURE) {
 		RETURN_NULL();
 	}
+	
+	obj = Z_GEARMAN_CLIENT_P(zobj);
 
-	gearman_return_t rc = gearman_client_job_exists_by_unique(&(obj->client), unique_key, unique_key_len);
+	obj->ret = gearman_client_job_exists_by_unique(&(obj->client), unique_key, unique_key_len);
 
-	if (rc != GEARMAN_JOB_EXISTS && rc != GEARMAN_NO_JOBS) {
+	if (obj->ret != GEARMAN_JOB_EXISTS && obj->ret != GEARMAN_NO_JOBS) {
 		php_error_docref(NULL, E_WARNING, "%s",
 						 gearman_client_error(&(obj->client)));		
 		RETURN_NULL();
 	}
 
-	if (rc == GEARMAN_JOB_EXISTS) {
+	if (obj->ret == GEARMAN_JOB_EXISTS) {
 		RETURN_TRUE;
 	}
 
