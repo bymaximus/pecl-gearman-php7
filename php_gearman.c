@@ -499,9 +499,11 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_gearman_client_job_exists_by_unique_key, 0, 0, 2)
 	ZEND_ARG_INFO(0, client_object)
 	ZEND_ARG_INFO(0, unique_key)
 ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_oo_gearman_client_job_exists_by_unique_key, 0, 0, 1)
 	ZEND_ARG_INFO(0, unique_key)
 ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_gearman_client_ping, 0, 0, 2)
 	ZEND_ARG_INFO(0, client_object)
 	ZEND_ARG_INFO(0, workload)
@@ -2132,15 +2134,15 @@ PHP_FUNCTION(gearman_client_do_epoch) {
 	gearman_client_obj *obj;
 	zval *zobj;
 	char *function_name;
-	int function_name_len;
+	size_t function_name_len;
 	char *workload;
-	int workload_len;
+	size_t workload_len;
 	long *timestamp;
 	char *unique = NULL;
-	int unique_len= 0;
+	size_t unique_len= 0;
 	zend_string *job_handle;
 
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS(), getThis(), "ssl|s", &zobj, gearman_client_ce,
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS(), getThis(), "Ossl|s", &zobj, gearman_client_ce,
 							&function_name, &function_name_len,
 							&workload, &workload_len, &timestamp,
 							&unique, &unique_len) == FAILURE) {
@@ -2268,10 +2270,11 @@ PHP_FUNCTION(gearman_client_job_status) {
 PHP_FUNCTION(gearman_client_job_exists_by_unique_key) {
 	zval *zobj;
 	gearman_client_obj *obj;
+	
 	char *unique_key;
-	int unique_key_len;
+	size_t unique_key_len;
 
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS(), getThis(), "s", &zobj, gearman_client_ce,
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS(), getThis(), "Os", &zobj, gearman_client_ce,
 								&unique_key, &unique_key_len) == FAILURE) {
 		RETURN_NULL();
 	}
